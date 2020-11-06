@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 
@@ -18,6 +16,8 @@ public class MainActivity extends ListActivity {
         String menu [] = new String [] {"Minha casa na cidade natal", "Minha casa em Viçosa", "Meu departamento", "Fechar aplicação"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, menu);
         setListAdapter(arrayAdapter);
+
+
     }
 
     @Override

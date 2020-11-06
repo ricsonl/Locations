@@ -52,4 +52,18 @@
         tools:layout_editor_absoluteX="-62dp"
         tools:layout_editor_absoluteY="305dp" />
 
+    <Button
+        android:background="@color/colorBackground"
+        android:textColor="@color/colorAccent"
+        android:text="Localização"
+        android:id="@+id/button_loc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginBottom="5dp"
+        android:onClick="onLocClick"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
