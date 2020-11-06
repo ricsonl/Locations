@@ -6,13 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:background="@color/colorBackground"
+        android:textColor="@color/colorAccent"
+        android:text="Itaguara"
+        android:id="@+id/button_ita"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_vic"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="5dp"
+        android:onClick="onItaClick"/>
+    <Button
+        android:background="@color/colorBackground"
+        android:textColor="@color/colorAccent"
+        android:text="Viçosa"
+        android:id="@+id/button_vic"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/button_ita"
+        app:layout_constraintEnd_toStartOf="@id/button_dpi"
+        app:layout_constraintStart_toEndOf="@id/button_ita"
+        android:layout_marginHorizontal="4dp"
+        android:onClick="onVicClick"/>
+    <Button
+        android:background="@color/colorBackground"
+        android:textColor="@color/colorAccent"
+        android:text="DPI"
+        android:id="@+id/button_dpi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/button_ita"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/button_vic"
+        android:layout_marginHorizontal="4dp"
+        android:onClick="onDpiClick"/>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-62dp"
+        tools:layout_editor_absoluteY="305dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

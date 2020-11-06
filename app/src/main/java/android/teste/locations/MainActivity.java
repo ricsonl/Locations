@@ -2,6 +2,7 @@ package android.teste.locations;
 
 import android.app.ListActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,16 +22,30 @@ public class MainActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id){
-        if(position != l.getAdapter().getCount()-1){//Caso não seja a última opção, "Fechar aplicação"
-            String aux = l.getItemAtPosition(position).toString();
+        super.onListItemClick(l, v, position, id);
 
-            Toast t = Toast.makeText(getBaseContext(), aux,Toast.LENGTH_SHORT);
-            TextView tv = (TextView) t.getView().findViewById(android.R.id.message);
-            tv.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            tv.setTextColor(getResources().getColor(R.color.colorBackground));
-            t.show();
+        if(position != l.getAdapter().getCount()-1){// caso NAO seja a última opção, "Fechar aplicação"
+
+            String aux = l.getItemAtPosition(position).toString();// nome do item clicado
+            Bundle params = new Bundle();
+            params.putString("toastMsg", aux);// mensagem que irá aparecer no toast
+
+            switch (position){
+                case 0:
+                    params.putString("local", "ita");
+                    break;
+                case 1:
+                    params.putString("local", "vic");
+                    break;
+                case 2:
+                    params.putString("local", "dpi");
+                    break;
+            }
+            Intent it = new Intent(getBaseContext(), MapActivity.class);
+            it.putExtras(params);
+            startActivity(it);
         } else {
-            finish();
+            finishAffinity();
         }
     }
 }
