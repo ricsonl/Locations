@@ -3,13 +3,12 @@ package android.teste.locations;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -32,6 +31,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     private GoogleMap map;
     public LocationManager lm;
+    public Criteria criteria;
+    public String provider;
 
     public Marker usr;
     public Location currentLocation;
@@ -46,6 +47,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
+
+        configuraCriterioLocation();
 
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
@@ -77,14 +80,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             map.animateCamera(upd);
         }
 
-        Toast t = Toast.makeText(getBaseContext(), params.getString("toastMsg"),Toast.LENGTH_SHORT);
-        TextView tv = (TextView) t.getView().findViewById(android.R.id.message);
-        tv.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        tv.setTextColor(getResources().getColor(R.color.colorBackground));
-        t.setGravity(Gravity.BOTTOM,0,220);
-        t.show();
+        Toast.makeText(this, params.getString("toastMsg"),Toast.LENGTH_SHORT).show();
 
         requestLocationPermissionIfNeeded();
+
+        if(checkPermission()){
+            map.setMyLocationEnabled(true);
+        }
     }
 
     public void onItaClick(View v){
@@ -131,20 +133,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             map.animateCamera(upd);
 
             DecimalFormat df = new DecimalFormat("0.##");
-            Toast t = Toast.makeText(getBaseContext(), "Você está a " + df.format(currentLocation.distanceTo(vicosa)) + " m do endereço em Viçosa",Toast.LENGTH_LONG);
-            TextView tv = (TextView) t.getView().findViewById(android.R.id.message);
-            tv.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            tv.setTextColor(getResources().getColor(R.color.colorBackground));
-            t.setGravity(Gravity.BOTTOM,0,220);
-            t.show();
+            Toast.makeText(this, "Você está a " + df.format(currentLocation.distanceTo(vicosa)) + " m do endereço em Viçosa",Toast.LENGTH_LONG).show();
 
         } else {
-            Toast t = Toast.makeText(getBaseContext(), "Você precisa ir às configurações do android e permitir que o aplicativo acesse sua localização!",Toast.LENGTH_LONG);
-            TextView tv = (TextView) t.getView().findViewById(android.R.id.message);
-            tv.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            tv.setTextColor(getResources().getColor(R.color.colorBackground));
-            t.setGravity(Gravity.BOTTOM,0,220);
-            t.show();
+            Toast.makeText(this, "Você precisa ir às configurações do android e permitir que o aplicativo acesse sua localização!",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -152,8 +144,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if(!checkPermission()){ // verifica se as permissoes ainda nao foram dadas
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);// pede as permissoes e chama onRequestPermissionsResult como callback
         } else {
-            //map.setMyLocationEnabled(true);
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, (LocationListener) this);// configura para atualizar a localização do usuário a cada 5 segundos
+            provider = lm.getBestProvider(criteria, true);
+            if (provider == null) {
+                //
+            } else {
+                lm.requestLocationUpdates(provider, 5000, 0, (LocationListener) this);// configura para atualizar a localização do usuário a cada 5 segundos
+            }
+        }
+    }
+
+    public void configuraCriterioLocation() {
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        criteria = new Criteria();
+
+        PackageManager packageManager = getPackageManager();
+        boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
+
+        if (hasGPS) {
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        } else {
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         }
     }
 
@@ -163,7 +173,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { // se o usuario deu as permissoes
                     if (checkPermission()) {
-                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, (LocationListener) this);// configura para atualizar a localização do usuário a cada 5 segundos;
+                        provider = lm.getBestProvider(criteria, true);
+                        if (provider == null) {
+                            //
+                        } else {
+                            lm.requestLocationUpdates(provider, 5000, 0, (LocationListener) this);// configura para atualizar a localização do usuário a cada 5 segundos;
+                        }
                     }
                 } else {
                     //
